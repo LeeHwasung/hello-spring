@@ -1,8 +1,10 @@
 package hello.hellospring;
 
+import hello.hellospring.aop.TimeTraceAop;
+import hello.hellospring.repository.JpaMemberRepository;
 import hello.hellospring.repository.MemberRepository;
-import hello.hellospring.repository.MemoryMemberRepository;
 import hello.hellospring.service.MemberService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,13 +14,57 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SpringConfig {
 
-    @Bean
-    public MemberService memberService() {
-        return new MemberService(memberRepository());
+    /*private DataSource dataSource;
+
+    @Autowired
+    public SpringConfig(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }*/
+
+    //JPA
+    /*private EntityManager em;
+
+    public SpringConfig(EntityManager em) {
+        this.em = em;
+    }*/
+
+    //Spring DATA JPA
+    private final MemberRepository memberRepository;
+
+    @Autowired
+    public SpringConfig(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
     }
 
+
+/*    @Bean
+    public MemberService memberService() {
+        return new MemberService(memberRepository());
+    }*/
+
+    //Spring DATA JPA
     @Bean
-    public MemberRepository memberRepository() {
-        return new MemoryMemberRepository(); // MemberRepository.java 인터페이스는 new 사용 불가
+    public MemberService memberService() {
+        return new MemberService(memberRepository);
     }
+
+/*    @Bean
+    public TimeTraceAop timeTraceAop() {
+        return new TimeTraceAop();
+    }*/
+
+    /*@Bean
+    public MemberRepository memberRepository() {
+        //메모리 사용
+        //return new MemoryMemberRepository(); // MemberRepository.java 인터페이스는 new 사용 불가
+
+        //순수 JDBC 방식 사용
+        //return new JdbcMemberRepository(dataSource);
+
+        //JdbcTemplate 사용
+        //return new JdbcTemplateMemberRepository(dataSource);
+
+        //JPA
+        return new JpaMemberRepository(em);
+    }*/
 }
